@@ -3,8 +3,8 @@
     public interface IRepository<T> where T : Entidade
     {
         Task<T> ObterPorId(int id);
-        void Criar(T entity);
-        void Atualizar(T entity);
-        void Excluir(T entity);
+        Task Criar(T entity);
+        Task Atualizar(T entity);
+        Task Excluir(T entity);
     }
 }
