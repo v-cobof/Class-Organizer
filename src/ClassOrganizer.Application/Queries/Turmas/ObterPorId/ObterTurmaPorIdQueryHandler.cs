@@ -29,13 +29,7 @@ namespace ClassOrganizer.Application.Queries.Turmas.ObterPorId
                 return default;
             }
 
-            return new TurmaDTO()
-            {
-                Id = turma.Id,
-                Ano = turma.Ano,
-                CursoId = turma.CursoId,
-                NomeTurma = turma.NomeTurma,
-            };
+            return new TurmaDTO(turma);
         }
     }
 }

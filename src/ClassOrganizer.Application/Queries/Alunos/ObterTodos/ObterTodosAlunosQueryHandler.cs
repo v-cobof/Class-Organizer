@@ -22,13 +22,7 @@ namespace ClassOrganizer.Application.Queries.Alunos.ObterTodos
         {
             var alunos = await _repository.ObterTodos();
 
-            return alunos.Select(t => new AlunoDTO()
-            {
-                Id = t.Id,
-                Nome = t.Nome,
-                Senha = t.Senha,
-                Usuario = t.Usuario,
-            });
+            return alunos.Select(t => new AlunoDTO(t));
         }
     }
 }

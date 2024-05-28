@@ -30,13 +30,7 @@ namespace ClassOrganizer.Application.Queries.Alunos.ObterPorId
                 return default;
             }
 
-            return new AlunoDTO()
-            {
-                Id = aluno.Id,
-                Nome = aluno.Nome,
-                Senha = aluno.Senha,
-                Usuario = aluno.Usuario
-            };              
+            return new AlunoDTO(aluno);              
         }
     }
 }

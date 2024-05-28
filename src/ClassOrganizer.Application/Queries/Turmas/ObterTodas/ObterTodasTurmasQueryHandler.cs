@@ -22,13 +22,7 @@ namespace ClassOrganizer.Application.Queries.Turmas.ObterTodas
         {
             var turmas = await _repository.ObterTodos();
 
-            return turmas.Select(t => new TurmaDTO()
-            {
-                Id = t.Id,
-                Ano = t.Ano,
-                CursoId = t.CursoId,
-                NomeTurma = t.NomeTurma,
-            });
+            return turmas.Select(t => new TurmaDTO(t));
         }
     }
 }

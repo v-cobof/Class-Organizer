@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ClassOrganizer.Domain.Entidades;
 
 namespace ClassOrganizer.Application.DTO
 {
@@ -12,5 +8,13 @@ namespace ClassOrganizer.Application.DTO
         public string Nome {  get; set; }
         public string Usuario {  get; set; }
         public string Senha {  get; set; }
+
+        public AlunoDTO(Aluno aluno)
+        {
+            Id = aluno.Id;
+            Nome = aluno.Nome;
+            Usuario = aluno.Usuario;
+            Senha = aluno.Senha;
+        }
     }
 }

@@ -1,12 +1,5 @@
-﻿using ClassOrganizer.Domain.Core.Dados;
-using ClassOrganizer.Domain.Dados;
+﻿using ClassOrganizer.Domain.Dados;
 using ClassOrganizer.Domain.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 using Dapper;
 
 namespace ClassOrganizer.Infrastructure.Dados.Repositories
@@ -18,6 +11,19 @@ namespace ClassOrganizer.Infrastructure.Dados.Repositories
         }
 
         protected override string Tabela => "turma";
+        private string TabelaRelacao => "aluno_turma";
+
+        public async Task<bool> AssociarAlunoATurma(int alunoId, int turmaId)
+        {
+            var sql = $@"INSERT INTO {TabelaRelacao} (turma_id, aluno_id)
+                            VALUES (@turmaId, @alunoId)";
+
+            using var connection = _dbContext.CreateConnection();
+
+            var result = await connection.ExecuteAsync(sql, new { turmaId, alunoId });
+
+            return result > 0;
+        }
 
         public async override Task<bool> Atualizar(Turma entity)
         {
@@ -47,9 +53,22 @@ namespace ClassOrganizer.Infrastructure.Dados.Repositories
             return await _dbContext.DeleteAsync(entity.Id, sql);
         }
 
+        public async Task<bool> InativarAssociacaoAlunoATurma(int alunoId, int turmaId)
+        {
+            var sql = $@"DELETE FROM {TabelaRelacao} 
+                            WHERE aluno_id = @alunoId 
+                            AND turma_id = @turmaId";
+
+            using var connection = _dbContext.CreateConnection();
+
+            var result = await connection.ExecuteAsync(sql, new { alunoId, turmaId });
+
+            return result > 0;
+        }
+
         public async override Task<Turma> ObterPorId(int id)
         {
-            var sql = $@"SELECT [id],
+            var sql = $@"SELECT id AS [Id],
                             curso_id AS [CursoId], 
                             turma AS [NomeTurma], 
                             ano AS [Ano] 
@@ -61,27 +80,26 @@ namespace ClassOrganizer.Infrastructure.Dados.Repositories
 
         public async Task<Turma> ObterPorNomeTurma(string nomeTurma)
         {
-            var sql = @"SELECT [id],
+            var sql = $@"SELECT id AS [Id],
                             curso_id AS [CursoId], 
                             turma AS [NomeTurma], 
                             ano AS [Ano] 
-                        FROM aluno 
+                        FROM {Tabela} 
                         WHERE turma = @nomeTurma";
 
             using var connection = _dbContext.CreateConnection();
 
-            return await connection.QueryFirstOrDefaultAsync<Turma>(sql, new { nomeTurma = nomeTurma });
+            return await connection.QueryFirstOrDefaultAsync<Turma>(sql, new { nomeTurma });
         }
 
         public async override Task<IEnumerable<Turma>> ObterTodos()
         {
-            var sql = $@"
-                SELECT [id],
-                    curso_id AS [CursoId], 
-                    turma AS [NomeTurma], 
-                    ano AS [Ano] 
-                FROM {Tabela} 
-                WHERE id = @id";
+            var sql = $@"SELECT 
+                            id AS [Id],
+                            curso_id AS [CursoId], 
+                            turma AS [NomeTurma], 
+                            ano AS [Ano] 
+                        FROM {Tabela}";
 
             return await _dbContext.GetAllAsync<Turma>(sql);
         }
