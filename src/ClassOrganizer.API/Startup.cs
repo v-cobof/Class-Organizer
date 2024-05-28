@@ -16,13 +16,17 @@ namespace ClassOrganizer.API
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            /*services.AddSwaggerGen();
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "School Manager API", Version = "v1" });
-                c.EnableAnnotations();
-            });*/
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Class Organizer",
+                    Description = "Uma API para gerenciar alunos, turmas e suas relações"
+                });
+            });
 
             services.AddDatabase(Configuration);
             services.AddDependencyInjection(Configuration);
@@ -32,7 +36,12 @@ namespace ClassOrganizer.API
         {
             if (app.Environment.IsDevelopment())
             {
-                //app.UseSwagger();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+                    c.RoutePrefix = "ui";
+                });
             }
 
             app.UseHttpsRedirection();

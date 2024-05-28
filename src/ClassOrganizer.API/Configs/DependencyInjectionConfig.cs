@@ -27,6 +27,7 @@ namespace ClassOrganizer.API.Configs
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
 
             services.AddScoped<IAlunoRepository, AlunoRepository>();
+            services.AddScoped<ITurmaRepository, TurmaRepository>();
 
             services.AddScoped<IHashingService, HashService>();
 

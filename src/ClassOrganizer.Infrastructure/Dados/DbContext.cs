@@ -18,7 +18,7 @@ namespace ClassOrganizer.Infrastructure.Dados
             _connectionString = connectionString;
         }
 
-        private IDbConnection CreateConnection()
+        public IDbConnection CreateConnection()
         {
             return new SqlConnection(_connectionString);
         }

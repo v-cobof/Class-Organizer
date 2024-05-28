@@ -5,5 +5,6 @@ namespace ClassOrganizer.Domain.Dados
 {
     public interface ITurmaRepository : IRepository<Turma>
     {
+        Task<Turma> ObterPorNomeTurma(string nomeTurma);
     }
 }

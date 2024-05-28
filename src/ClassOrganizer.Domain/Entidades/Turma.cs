@@ -14,5 +14,20 @@ namespace ClassOrganizer.Domain.Entidades
             NomeTurma = nomeTurma;
             Ano = ano;
         }
+
+        public void AtualizarCursoId(int cursoId)
+        {
+            CursoId = cursoId;
+        }
+
+        public void AtualizarNomeTurma(string nomeTurma)
+        {
+            NomeTurma = nomeTurma;
+        }
+
+        public void AtualizarAno(int ano)
+        {
+            Ano = ano;
+        }
     }
 }
