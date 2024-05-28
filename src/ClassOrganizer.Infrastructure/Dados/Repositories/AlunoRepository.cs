@@ -10,31 +10,66 @@ namespace ClassOrganizer.Infrastructure.Dados.Repositories
 {
     public class AlunoRepository : AbstractRepository<Aluno>, IAlunoRepository
     {
-        protected override string Tabela => "aluno";
-
-        public async override Task Atualizar(Aluno entity)
+        public AlunoRepository(DbContext dbContext) : base(dbContext)
         {
-            await _dbContext.UpdateAsync(entity, "");
         }
 
-        public async override Task Criar(Aluno entity)
+        protected override string Tabela => "aluno";
+
+        public async override Task<bool> Atualizar(Aluno entity)
         {
-            var sqlQuery = $@"
+            var sql = $@"
+                UPDATE {Tabela} 
+                SET 
+                    nome = @Nome, 
+                    usuario = @Usuario, 
+                    senha = @Senha 
+                WHERE id = @Id";
+
+            return await _dbContext.UpdateAsync(entity, sql);
+        }
+
+        public async override Task<bool> Criar(Aluno entity)
+        {
+            var sql = $@"
                 INSERT INTO {Tabela} (nome, usuario, senha)
                 OUTPUT INSERTED.id
                 VALUES (@Nome, @Usuario, @Senha)";
 
-            await _dbContext.CreateAsync(entity, sqlQuery);
+            return await _dbContext.CreateAsync(entity, sql);
         }
 
-        public override Task Excluir(Aluno entity)
+        public async override Task<bool> Excluir(Aluno entity)
         {
-            throw new NotImplementedException();
+            var sql = $@"
+                DELETE FROM {Tabela} WHERE id = @id";
+
+            return await _dbContext.DeleteAsync(entity.Id, sql);
         }
 
-        public override Task<Aluno> ObterPorId(int id)
+        public async override Task<Aluno> ObterPorId(int id)
         {
-            throw new NotImplementedException();
+            var sql = $@"
+                SELECT [id],
+                    nome AS [Nome], 
+                    usuario AS [Usuario], 
+                    senha AS [Senha] 
+                FROM {Tabela} 
+                WHERE id = @id";
+
+            return await _dbContext.GetByIdAsync<Aluno>(id, sql);
+        }
+
+        public async override Task<IEnumerable<Aluno>> ObterTodos()
+        {
+            var sql = $@"
+                SELECT [id],
+                    nome AS [Nome], 
+                    usuario AS [Usuario], 
+                    senha AS [Senha] 
+                FROM {Tabela}";
+
+            return await _dbContext.GetAllAsync<Aluno>(sql);
         }
     }
 }

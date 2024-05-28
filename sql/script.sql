@@ -1,13 +1,13 @@
-CREATE DATABASE ClassOrganizer;
+CREATE DATABASE ClassOrganizerDb;
 GO
 
 -- Usando o banco de dados criado
-USE ClassOrganizer;
+USE ClassOrganizerDb;
 GO
 
 -- Criando a tabela 'aluno'
 CREATE TABLE aluno (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     usuario VARCHAR(45) NOT NULL,
     senha CHAR(60) NOT NULL
@@ -16,7 +16,7 @@ GO
 
 -- Criando a tabela 'turma'
 CREATE TABLE turma (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     curso_id INT NOT NULL,
     turma VARCHAR(45) NOT NULL,
     ano INT NOT NULL

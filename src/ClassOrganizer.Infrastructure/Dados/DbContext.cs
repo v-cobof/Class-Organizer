@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassOrganizer.Domain.Core;
 using Dapper;
 
 namespace ClassOrganizer.Infrastructure.Dados
@@ -22,12 +23,15 @@ namespace ClassOrganizer.Infrastructure.Dados
             return new SqlConnection(_connectionString);
         }
 
-        public async Task<int> CreateAsync<T>(T entity, string insertQuery)
+        public async Task<bool> CreateAsync<T>(T entity, string insertQuery) where T : Entidade
         {
             using (var connection = CreateConnection())
             {
                 var id = await connection.QuerySingleAsync<int>(insertQuery, entity);
-                return id;
+
+                entity.Id = id;
+
+                return id > 0;
             }
         }
 
@@ -49,21 +53,21 @@ namespace ClassOrganizer.Infrastructure.Dados
             }
         }
 
-        public async Task<int> UpdateAsync<T>(T entity, string updateQuery)
+        public async Task<bool> UpdateAsync<T>(T entity, string updateQuery) where T : Entidade
         {
             using (var connection = CreateConnection())
             {
                 var rowsAffected = await connection.ExecuteAsync(updateQuery, entity);
-                return rowsAffected;
+                return rowsAffected > 0;
             }
         }
 
-        public async Task<int> DeleteAsync(int id, string deleteQuery)
+        public async Task<bool> DeleteAsync(int id, string deleteQuery)
         {
             using (var connection = CreateConnection())
             {
                 var rowsAffected = await connection.ExecuteAsync(deleteQuery, new { Id = id });
-                return rowsAffected;
+                return rowsAffected > 0;
             }
         }
     }

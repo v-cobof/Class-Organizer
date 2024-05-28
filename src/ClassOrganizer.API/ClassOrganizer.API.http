@@ -1,6 +1,0 @@
-@ClassOrganizer.API_HostAddress = http://localhost:5163
-
-GET {{ClassOrganizer.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

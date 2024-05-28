@@ -6,18 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassOrganizer.Application.Commands
+namespace ClassOrganizer.Application.Queries
 {
-    public abstract class BaseCommandHandler<TReq> : IRequestHandler<TReq, CommandResult> where TReq : Command
+    public abstract class BaseQueryHandler<TReq, TRes> : IRequestHandler<TReq, TRes> where TReq : Query<TRes>
     {
         protected readonly IMediatorHandler _mediator;
 
-        public BaseCommandHandler(IMediatorHandler mediator)
+        public BaseQueryHandler(IMediatorHandler mediator)
         {
             _mediator = mediator;
         }
 
-        public abstract Task<CommandResult> Handle(TReq request, CancellationToken cancellationToken);
+        public abstract Task<TRes> Handle(TReq request, CancellationToken cancellationToken);
 
         protected async Task Notificar(string message)
         {
@@ -26,4 +26,6 @@ namespace ClassOrganizer.Application.Commands
             await _mediator.PublishNotification(notification);
         }
     }
+
+
 }

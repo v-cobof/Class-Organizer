@@ -14,5 +14,22 @@ namespace ClassOrganizer.Domain.Entidades
             Usuario = usuario;
             Senha = senha;
         }
+
+        public Aluno() { }
+
+        public void AtualizarNome(string nome)
+        {
+            Nome = nome;
+        }
+
+        public void AtualizarUsuario(string usuario)
+        {
+            Usuario = usuario;
+        }
+
+        public void AtualizarSenha(string senha)
+        {
+            Senha = senha;
+        }
     }
 }

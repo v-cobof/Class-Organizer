@@ -13,12 +13,19 @@ namespace ClassOrganizer.Infrastructure.Dados.Repositories
         protected readonly DbContext _dbContext;
         protected abstract string Tabela { get; }
 
-        public abstract Task Atualizar(T entity);
+        public AbstractRepository(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
-        public abstract Task Criar(T entity);
+        public abstract Task<bool> Atualizar(T entity);
 
-        public abstract Task Excluir(T entity);
+        public abstract Task<bool> Criar(T entity);
+
+        public abstract Task<bool> Excluir(T entity);
 
         public abstract Task<T> ObterPorId(int id);
+
+        public abstract Task<IEnumerable<T>> ObterTodos();
     }
 }
