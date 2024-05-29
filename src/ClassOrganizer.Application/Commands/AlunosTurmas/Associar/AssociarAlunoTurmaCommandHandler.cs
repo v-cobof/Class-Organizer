@@ -18,13 +18,13 @@ namespace ClassOrganizer.Application.Commands.AlunosTurmas.Associar
         {
             if (await _alunoRepository.ObterPorId(request.AlunoId) is null)
             {
-                await Notificar("O aluno não existe.");
+                await Notificar("O aluno não foi encontrado.");
                 return CommandResult.Falha();
             }
 
             if (await _turmaRepository.ObterPorId(request.TurmaId) is null)
             {
-                await Notificar("A turma não existe.");
+                await Notificar("A turma não foi encontrada.");
                 return CommandResult.Falha();
             }
 

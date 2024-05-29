@@ -18,11 +18,47 @@ namespace ClassOrganizer.API.Controllers
 
         protected ActionResult CustomResponse(object result = null)
         {
+            var metodo = HttpContext.Request.Method;
+
             if (OperacaoEhValida())
             {
-                return Ok(result);
+                return metodo switch
+                {
+                    "GET" => Ok(result),
+                    "POST" => Created(),
+                    "PUT" => NoContent(),
+                    "DELETE" => NoContent(),
+                    _ => Ok(result),
+                };
             }
 
+            return metodo switch
+            {
+                "GET" => NotFound(),
+                "POST" => BadRequestComMensagens(),
+                "PUT" => HandleErroPutDelete(),
+                "DELETE" => HandleErroPutDelete(),
+                _ => Ok(result),
+            };           
+        }
+
+        private ActionResult HandleErroPutDelete()
+        {
+            var erros = _notificationHandler.GetErrors().ToArray();
+
+            if (erros.Any(t => t.ToLower().Contains("não foi encontrad")))
+            {
+                return NotFound();
+            }
+
+            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
+            {
+                { "Messages", erros }
+            }));
+        }
+
+        private BadRequestObjectResult BadRequestComMensagens()
+        {
             return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
             {
                 { "Messages", _notificationHandler.GetErrors().ToArray() }
