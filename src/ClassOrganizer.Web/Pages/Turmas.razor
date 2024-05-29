@@ -1,0 +1,232 @@
+﻿@page "/turmas"
+@inject HttpClient Http
+@inject IJSRuntime JS
+@using ClassOrganizer.Application.DTO
+@using ClassOrganizer.Web.ViewModels
+@using NetcodeHub.Packages.Components.Modal
+
+<PageTitle>Turmas</PageTitle>
+
+<h1>Turmas</h1>
+
+<button class="btn btn-primary mb-5 mt-2" @onclick="OpenModal">Criar</button>
+
+<Modal Actions="HandleAction" BootstrapClass="border-0" CustomStyle="width:600px; heigth: 700px" @bind-Open="IsOpen">
+    <ContentContent>
+        <div class="modal-header d-flex justify-content-center">
+            <h3 class="modal-title" id="createTurmaModalLabel">Turma</h3>
+        </div>
+        @if (ErrorMessages != null && ErrorMessages.Any())
+        {
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    @foreach (var error in ErrorMessages)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="modal-body">
+            <EditForm Model="@Turma" OnValidSubmit="HandleActionSave">
+                <DataAnnotationsValidator />
+
+                <div class="form-group mb-4">
+                    <label for="curso">Curso</label>
+                    <InputNumber id="curso" class="form-control" @bind-Value="Turma.CursoId" />
+                    <ValidationMessage For="@(() => Turma.CursoId)" />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="nomeTurma">Nome Turma</label>
+                    <InputText id="nomeTurma" class="form-control" @bind-Value="Turma.NomeTurma" />
+                    <ValidationMessage For="@(() => Turma.NomeTurma)" />
+                </div>
+
+                <div class="form-group mb-5">
+                    <label for="ano">Ano</label>
+                    <InputNumber id="ano" class="form-control" @bind-Value="Turma.Ano" />
+                    <ValidationMessage For="@(() => Turma.Ano)" />
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2" value="salvar">Salvar</button>
+                    <button class="btn btn-danger mx-2" value="cancelar" @onclick="HandleActionCancel">Cancelar</button>
+                </div>
+            </EditForm>
+        </div>
+    </ContentContent>
+    <ButtonTemplate> 
+    </ButtonTemplate>
+</Modal>
+
+<Modal Actions="HandleAction" BootstrapClass="border-0" CustomStyle="width:350px" @bind-Open="Confirmacao">
+    <ContentContent>
+        <p>Tem certeza que deseja apagar a turma ?</p>
+    </ContentContent>
+    <ButtonTemplate>
+        <button class="btn btn-primary mx-2" value="salvar" @onclick="ConfirmarInativacao">Confirmar</button>
+        <button class="btn btn-danger mx-2" value="cancelar" @onclick="FecharConfirmacao">Cancelar</button>
+    </ButtonTemplate>
+</Modal>
+
+<h3 class="mb-2">Lista de Turmas</h3>
+
+@if (turmas == null)
+{
+    <h3><em>Carregando...</em></h3>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Curso</th>
+                <th>Nome da turma</th>
+                <th>Ano</th>
+                <th>Operações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var turma in turmas)
+            {
+                <tr>
+                    <td>@turma.Id</td>
+                    <td>@turma.CursoId</td>
+                    <td>@turma.NomeTurma</td>
+                    <td>@turma.Ano</td>
+                    <td class="text-right">
+                        <button class="btn btn-primary" @onclick="() => Editar(turma.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => Inativar(turma.Id)">Inativar</button>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private TurmaDTO[]? turmas;
+
+    [Parameter] public TurmaViewModel Turma { get; set; } = new TurmaViewModel();
+
+    public string[] ErrorMessages { get; set; }
+
+    public bool IsOpen { get; set; }
+    public bool Edicao { get; set; }
+
+    public bool Confirmacao { get; set; }
+
+    public void MostrarConfirmacao() => Confirmacao = true;
+    public void FecharConfirmacao() => Confirmacao = false;
+
+    private async void Editar(int id)
+    {
+        var turma = await Http.GetFromJsonAsync<TurmaDTO>($"/api/turmas/{id}");
+
+        Turma.Id = turma.Id;       
+        Turma.CursoId = turma.Id;
+        Turma.NomeTurma = turma.NomeTurma;
+        Turma.Ano = turma.Ano;
+
+        Edicao = true;
+        OpenModal();
+        StateHasChanged();
+    }
+
+    private async void Inativar(int id)
+    {
+        Turma.Id = id;
+        MostrarConfirmacao();
+    }
+
+    private async void ConfirmarInativacao()
+    {
+        var response = await Http.DeleteAsync($"/api/turmas/{Turma.Id}");
+
+        if (await ResponseEhSucesso(response))
+        {
+            LimparModel();         
+            await OnInitializedAsync();
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        turmas = await Http.GetFromJsonAsync<TurmaDTO[]>("/api/turmas");
+    }
+
+    private async Task CriarTurma()
+    {
+        var response = await Http.PostAsJsonAsync("/api/turmas", Turma);
+
+        if (await ResponseEhSucesso(response))
+        {
+            LimparModel();
+            Edicao = false;
+            CloseModal();
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task<bool> ResponseEhSucesso(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadFromJsonAsync<ErrorViewModel>();
+
+            ErrorMessages = error.errors.Messages.ToArray();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task EditarTurma()
+    {
+        var response = await Http.PutAsJsonAsync($"/api/turmas/{Turma.Id}", Turma);
+
+        if (await ResponseEhSucesso(response))
+        {
+            LimparModel();
+            Edicao = false; 
+            CloseModal();
+            await OnInitializedAsync();
+        }
+    }
+
+    void OpenModal() => IsOpen = true;
+    void CloseModal() => IsOpen = false;
+
+    private void LimparModel()
+    {
+        Turma = new TurmaViewModel();
+
+        ErrorMessages = null;
+    }
+
+    private async Task HandleActionSave()
+    {
+        if (Edicao)
+        {
+            await EditarTurma();
+        }
+        else
+        {
+            await CriarTurma();
+        }
+    }
+
+    private async Task HandleActionCancel()
+    {
+        LimparModel();
+        Edicao = false;
+        CloseModal();
+    }
+
+    private void HandleAction(){}
+}

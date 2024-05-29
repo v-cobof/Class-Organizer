@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClassOrganizer.Application.Queries.Alunos.ObterTodos
 {
-    public record ObterTodosAlunosQuery : Query<IEnumerable<AlunoDTO>>
+    public record ObterTodosAlunosQuery : Query<IEnumerable<AlunoMinDTO>>
     {
     }
 }

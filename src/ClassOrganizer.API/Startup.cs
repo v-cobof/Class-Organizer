@@ -28,6 +28,17 @@ namespace ClassOrganizer.API
                 });
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+
             services.AddDatabase(Configuration);
             services.AddDependencyInjection(Configuration);
         }

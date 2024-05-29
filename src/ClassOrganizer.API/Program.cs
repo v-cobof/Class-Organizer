@@ -12,6 +12,8 @@ namespace ClassOrganizer.API
             startup.ConfigureServices(builder.Services);
 
             var app = builder.Build();
+
+            app.UseCors("AllowAnyOrigin");
             startup.Configure(app);
 
             app.Run();

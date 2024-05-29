@@ -16,5 +16,7 @@ namespace ClassOrganizer.Application.DTO
             Usuario = aluno.Usuario;
             Senha = aluno.Senha;
         }
+
+        public AlunoDTO() { }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClassOrganizer.Application.Queries.Alunos.ObterTodos
 {
-    public class ObterTodosAlunosQueryHandler : BaseQueryHandler<ObterTodosAlunosQuery, IEnumerable<AlunoDTO>>
+    public class ObterTodosAlunosQueryHandler : BaseQueryHandler<ObterTodosAlunosQuery, IEnumerable<AlunoMinDTO>>
     {
         private IAlunoRepository _repository;
 
@@ -18,11 +18,11 @@ namespace ClassOrganizer.Application.Queries.Alunos.ObterTodos
             _repository = repository;
         }
 
-        public async override Task<IEnumerable<AlunoDTO>> Handle(ObterTodosAlunosQuery request, CancellationToken cancellationToken)
+        public async override Task<IEnumerable<AlunoMinDTO>> Handle(ObterTodosAlunosQuery request, CancellationToken cancellationToken)
         {
             var alunos = await _repository.ObterTodos();
 
-            return alunos.Select(t => new AlunoDTO(t));
+            return alunos.Select(t => new AlunoMinDTO(t));
         }
     }
 }

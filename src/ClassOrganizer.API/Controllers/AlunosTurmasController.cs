@@ -34,11 +34,16 @@ namespace ClassOrganizer.API.Controllers
             return await EnviarComando(associarAlunoTurmaCommand);
         }
 
-        [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> InativarAssociacaoAlunoTurma([FromBody] InativarAssociacaoAlunoTurmaCommand inativarAssociacaoAlunoTurmaCommand)
+        [HttpDelete("{idAluno}/{idTurma}")]
+        public async Task<ActionResult> InativarAssociacaoAlunoTurma(int idAluno, int idTurma)
         {
-            return await EnviarComando(inativarAssociacaoAlunoTurmaCommand);
+            var comando = new InativarAssociacaoAlunoTurmaCommand()
+            {
+                AlunoId = idAluno,
+                TurmaId = idTurma
+            };             
+
+            return await EnviarComando(comando);
         }
     }
 }

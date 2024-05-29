@@ -31,7 +31,7 @@ namespace ClassOrganizer.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AlunoDTO>>> ObterTodosAlunos()
+        public async Task<ActionResult<IEnumerable<AlunoMinDTO>>> ObterTodosAlunos()
         {
             var query = new ObterTodosAlunosQuery();
 

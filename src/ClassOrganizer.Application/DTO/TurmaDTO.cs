@@ -21,5 +21,7 @@ namespace ClassOrganizer.Application.DTO
             NomeTurma = turma.NomeTurma;
             Ano = turma.Ano;
         }
+
+        public TurmaDTO() { }
     }
 }
