@@ -9,6 +9,18 @@
 
 <h1>Alunos</h1>
 
+@if (ErrorMessages != null && ErrorMessages.Any() && !IsOpen)
+{
+    <div class="alert alert-danger" role="alert">
+        <ul>
+            @foreach (var error in ErrorMessages)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
 <button class="btn btn-primary mb-5 mt-2" @onclick="OpenModal">Criar</button>
 
 <Modal Actions="HandleAction" BootstrapClass="border-0" CustomStyle="width:600px; heigth: 700px" @bind-Open="IsOpen">
@@ -143,7 +155,7 @@ else
     private async void ConfirmarInativacao()
     {
         var response = await Http.DeleteAsync($"/api/alunos/{Aluno.Id}");
-        
+
         if (await ResponseEhSucesso(response))
         {
             LimparModel();         
@@ -177,6 +189,8 @@ else
             var error = await response.Content.ReadFromJsonAsync<ErrorViewModel>();
 
             ErrorMessages = error.errors.Messages.ToArray();
+
+            StateHasChanged();
 
             return false;
         }

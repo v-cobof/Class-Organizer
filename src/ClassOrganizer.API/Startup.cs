@@ -1,4 +1,5 @@
 ﻿using ClassOrganizer.API.Configs;
+using ClassOrganizer.API.Middleware;
 using Microsoft.AspNetCore.Builder;
 
 namespace ClassOrganizer.API
@@ -56,6 +57,8 @@ namespace ClassOrganizer.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
