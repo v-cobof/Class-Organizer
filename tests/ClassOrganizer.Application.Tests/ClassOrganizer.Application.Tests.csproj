@@ -22,12 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AlunoTurmas\" />
-    <Folder Include="Turmas\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\ClassOrganizer.Application\ClassOrganizer.Application.csproj" />
+    <ProjectReference Include="..\..\src\ClassOrganizer.Infrastructure\ClassOrganizer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

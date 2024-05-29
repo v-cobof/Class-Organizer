@@ -47,5 +47,28 @@ namespace ClassOrganizer.Application.Tests.Alunos
             _mocker.GetMock<IHashingService>().Verify(r => r.CriarHash(It.IsAny<string>()), Times.Once);
             _mocker.GetMock<IAlunoRepository>().Verify(r => r.Criar(It.IsAny<Aluno>()), Times.Once);
         }
+
+        [Fact]
+        public async void CriarAluno_ProblemaCriarHash_DeveFalhar()
+        {
+            // Arrange
+            var comando = new CriarAlunoCommand()
+            {
+                Nome = Guid.NewGuid().ToString(),
+                Senha = "Abc@12345",
+                Usuario = Guid.NewGuid().ToString(),
+            };
+
+            _mocker.GetMock<IHashingService>().Setup(t => t.CriarHash(It.IsAny<string>())).Returns($"{Guid.NewGuid()}{Guid.NewGuid()}{Guid.NewGuid()}");
+
+            // Act
+            var result = await _handler.Handle(comando, CancellationToken.None);
+
+            // Assert
+            Assert.Equal(result, CommandResult.Falha());
+            _mocker.GetMock<IMediatorHandler>().Verify(m => m.PublishNotification(It.IsAny<DomainNotification>()), Times.Once);
+            _mocker.GetMock<IHashingService>().Verify(r => r.CriarHash(It.IsAny<string>()), Times.Once);
+            _mocker.GetMock<IAlunoRepository>().Verify(r => r.Criar(It.IsAny<Aluno>()), Times.Never);
+        }
     }
 }
