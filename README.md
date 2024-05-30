@@ -47,6 +47,8 @@ A API tem uma documentação no swagger que pode ser vista ao executar o projeto
 
 ## UI
 
+A UI vai estar na URL 'http://localhost:5211' ou 'https://localhost:7075', ao executar pelo Visual Studio
+
 A interface tem as 3 seguintes telas
 
 ![image](https://github.com/v-cobof/Class-Organizer/assets/85073588/ca0d2d12-22c5-4675-878a-756a0e200cbf)
